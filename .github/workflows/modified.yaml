@@ -1,12 +1,14 @@
 name: Build all wheels
 
-on:
-  workflow_dispatch:
-  schedule:
-    - cron: '30 0 * * 1'
-  push:
-    branches:
-      - "master"
+# CINTENT >> MANUAL TRIGGER
+# on:
+#   workflow_dispatch:
+#   schedule:
+#     - cron: '30 0 * * 1'
+#   push:
+#     branches:
+#       - "master"
+on: [repository_dispatch, workflow_dispatch]
 
 jobs:
   build_wheels:
@@ -14,10 +16,13 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        # CINTENT >> UNSUPPORTED_OS
+        # os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest]
 
     steps:
     - uses: actions/checkout@v4
+
     - name: Set up Python 3.11
       uses: actions/setup-python@v5
       with:
@@ -45,7 +50,8 @@ jobs:
       run: |
         python -m cibuildwheel --output-dir wheelhouse
 
-    - uses: actions/upload-artifact@v4
-      with:
-        name: wheels-${{ strategy.job-index }}
-        path: ./wheelhouse
+    # CINTENT >> REMOVE_UPLOADS
+    # - uses: actions/upload-artifact@v4
+    #   with:
+    #     name: wheels-${{ strategy.job-index }}
+    #     path: ./wheelhouse
